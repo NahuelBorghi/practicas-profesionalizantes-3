@@ -1,25 +1,18 @@
 const xlsx = require("xlsx");
-const { createdb } = require("mysql2/promise");
+const { createConnection } = require("mysql2/promise");
 
 const env = {
-    host: process.env.DATABASE_HOST || "db",
+    host: process.env.DATABASE_HOST || "localhost",
     user: process.env.DATABASE_USER || "root",
-    password: process.env.MYSQL_ROOT_PASSWORD || "",
+    password: process.env.MYSQL_ROOT_PASSWORD || "matiasGASTONsantiago",
     database: process.env.MYSQL_DATABASE || "diagnostico",
 };
-
 const loadData = async (req, res) => {
     try {
-        const db = await createdb(env);
+        const db = await createConnection(env);
         const [provincias] = await db.execute("SELECT * FROM Provinces", []);
-        const [departamentos] = await db.execute(
-            "SELECT * FROM Departments",
-            []
-        );
-        const [municipios] = await db.execute(
-            "SELECT * FROM Municipalities",
-            []
-        );
+        const [departamentos] = await db.execute("SELECT * FROM Departments",[]);
+        const [municipios] = await db.execute("SELECT * FROM Municipalities",[]);
         const [localidades] = await db.execute("SELECT * FROM Localities", []);
 
         const data = xlsx.readFile("./Localidades.xlsx");
@@ -49,7 +42,7 @@ const loadData = async (req, res) => {
         }
 
         if (departamentos.length === 0) {
-            const provincias = await db.execute("SELECT * FROM Provinces", []);
+            const [provincias] = await db.execute("SELECT * FROM Provinces", []);
             const departamentos = [];
             excelData.forEach((data) => {
                 const provincia = provincias.find((provincias) => {
@@ -58,7 +51,7 @@ const loadData = async (req, res) => {
                 if (provincia) {
                     departamentos.push({
                         name: data.Departamento,
-                        provinciaID: provincia.id,
+                        idProvincia: provincia.id,
                     });
                 }
             });
@@ -87,10 +80,7 @@ const loadData = async (req, res) => {
         }
 
         if (municipios.length === 0) {
-            const departamentos = await db.execute(
-                "SELECT * FROM Departments",
-                []
-            );
+            const [departamentos] = await db.execute("SELECT * FROM Departments", []);
             const municipios = [];
             excelData.forEach((data) => {
                 const departamento = departamentos.find((i) => {
@@ -99,7 +89,7 @@ const loadData = async (req, res) => {
                 if (departamento) {
                     municipios.push({
                         name: data.Municipio,
-                        departamentoID: departamento.id,
+                        idDepartment: departamento.id,
                     });
                 }
             });
@@ -118,8 +108,8 @@ const loadData = async (req, res) => {
             municipiosFormatted.forEach(async (i) => {
                 try {
                     await db.execute(
-                        "INSERT INTO Municipalities (name, idProvince) VALUES (?, ?)",
-                        [i.name, i.idProvincia]
+                        "INSERT INTO Municipalities (name, idDepartment) VALUES (?, ?)",
+                        [i.name, i.idDepartment]
                     );
                 } catch (error) {
                     console.log("error", error);
@@ -128,10 +118,7 @@ const loadData = async (req, res) => {
         }
 
         if (localidades.length === 0) {
-            const municipios = await db.execute(
-                "SELECT * FROM Municipalities",
-                []
-            );
+            const [municipios] = await db.execute("SELECT * FROM Municipalities", []);
             const localidadesArr = [];
             excelData.forEach((data) => {
                 const municipio = municipios.find((i) => {
@@ -139,7 +126,7 @@ const loadData = async (req, res) => {
                 });
                 if (municipio) {
                     localidadesArr.push({
-                        name: data.name,
+                        name: data.Municipio,
                         idMunicipality: municipio.id,
                         latitud: data.Latitud,
                         longitud: data.Longitud,
@@ -161,7 +148,7 @@ const loadData = async (req, res) => {
             localidadFormatted.forEach(async (i) => {
                 try {
                     await db.execute(
-                        "INSERT INTO Localities (name, latitude, longitude, idMunicipality) VALUES (?, ?, ?, ?)",
+                        "INSERT INTO Localities (name, latitud, longitud, idMunicipality) VALUES (?, ?, ?, ?)",
                         [i.name, i.latitud, i.longitud, i.idMunicipality]
                     );
                 } catch (error) {

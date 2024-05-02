@@ -9,9 +9,9 @@ const port = process.env.PORT || 8080;
 
 // Conexión a la base de datos
 const env = {
-    "host": process.env.DATABASE_HOST || "db",
+    "host": process.env.DATABASE_HOST || "localhost",
     "user": process.env.DATABASE_USER || "root",
-    "password": process.env.MYSQL_ROOT_PASSWORD || "",
+    "password": process.env.MYSQL_ROOT_PASSWORD || "matiasGASTONsantiago",
     "database": process.env.MYSQL_DATABASE || "diagnostico",
 };
 
@@ -20,12 +20,12 @@ const env = {
 app.get("/provinces", async (req, res) => {
   try {
       const db = await createConnection(env);
-      const [provincias] = await db.execute(
+      const [provinces] = await db.execute(
           "SELECT * FROM Provinces",
           []
       );
       db.end();
-      res.status(200).send(provincias);
+      res.status(200).send(provinces);
   } catch (error) {
       console.log("error", error);
       res.status(409).send({ message: error });
@@ -37,9 +37,9 @@ app.get("/provinces", async (req, res) => {
 app.get("/departments", async (req, res) => {
   try {
       const db = await createConnection(env);
-      const [provincias] = await db.execute("SELECT * FROM Departments", []);
+      const [departments] = await db.execute("SELECT * FROM Departments", []);
       db.end();
-      res.status(200).send(provincias);
+      res.status(200).send(departments);
   } catch (error) {
       console.log("error", error);
       res.status(409).send({ message: error });
@@ -67,9 +67,9 @@ app.get("/department/:id", async (req, res) => {
 app.get("/municipalities", async (req, res) => {
   try {
       const db = await createConnection(env);
-      const [provincias] = await db.execute("SELECT * FROM Municipalities", []);
+      const [municipalities] = await db.execute("SELECT * FROM Municipalities", []);
       db.end();
-      res.status(200).send(provincias);
+      res.status(200).send(municipalities);
   } catch (error) {
       console.log("error", error);
       res.status(409).send({ message: error });
@@ -97,9 +97,9 @@ app.get("/municipality/:id", async (req, res) => {
 app.get("/localities", async (req, res) => {
   try {
       const db = await createConnection(env);
-      const [provincias] = await db.execute("SELECT * FROM Localities", []);
+      const [localities] = await db.execute("SELECT * FROM Localities", []);
       db.end();
-      res.status(200).send(provincias);
+      res.status(200).send(localities);
   } catch (error) {
       console.log("error", error);
       res.status(409).send({ message: error });
