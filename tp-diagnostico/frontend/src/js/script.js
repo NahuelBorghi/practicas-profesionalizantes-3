@@ -48,23 +48,19 @@ const handleChangeLocalidad = () => {
 const handleChangeMunicipio = (ev) => {
     ev.preventDefault();
     const idMunicipio = selectMunicipios.value;
-    fetch(`${URL}localility/${idMunicipio}`)
+    fetch(`${URL}locality/${idMunicipio}`)
         .then((response) => response.json())
         .then((data) => {
-
             if (data.length > 0) {
                 selectLocalidades.removeAttribute("disabled");
                 deleteLocalChildren();
                 data.forEach((i) => {
                     const localidadesOptions = document.createElement("option");
                     localidadesOptions.value = JSON.stringify(i);
-                    localidadesOptions.innerText = i.nombre;
+                    localidadesOptions.innerText = i.name;
                     selectLocalidades.appendChild(localidadesOptions);
                 });
-                selectLocalidades.addEventListener(
-                    "change",
-                    handleChangeLocalidad
-                );
+                selectLocalidades.addEventListener( "change", handleChangeLocalidad);
             }
         });
 };
@@ -72,10 +68,10 @@ const handleChangeMunicipio = (ev) => {
 const handleChangeDepartamento = (ev) => {
     ev.preventDefault();
     const idDepartamento = selectDepartamentos.value;
+    console.log(idDepartamento);
     fetch(`${URL}municipality/${idDepartamento}`)
         .then((response) => response.json())
         .then((data) => {
-
             if (data.length > 0) {
                 selectMunicipios.removeAttribute("disabled");
                 deleteLocalChildren();
@@ -83,24 +79,19 @@ const handleChangeDepartamento = (ev) => {
                 data.forEach((i) => {
                     const municipiosOptions = document.createElement("option");
                     municipiosOptions.value = i.id;
-                    municipiosOptions.innerText = i.nombre;
+                    municipiosOptions.innerText = i.name;
                     selectMunicipios.appendChild(municipiosOptions);
                 });
-                selectMunicipios.addEventListener(
-                    "change",
-                    handleChangeMunicipio
-                );
+                selectMunicipios.addEventListener( "change", handleChangeMunicipio);
             }
         });
 };
 
 const handleChangeProvincia = (ev) => {
-    ev.preventDefault();
     const idProvincia = selectProvincias.value;
     fetch(`${URL}department/${idProvincia}`)
         .then((response) => response.json())
         .then((data) => {
-
             if (data.length > 0) {
                 selectDepartamentos.removeAttribute("disabled");
                 deleteLocalChildren();
@@ -110,19 +101,16 @@ const handleChangeProvincia = (ev) => {
                     const departamentosOptions =
                         document.createElement("option");
                     departamentosOptions.value = i.id;
-                    departamentosOptions.innerText = i.nombre;
+                    departamentosOptions.innerText = i.name;
                     selectDepartamentos.appendChild(departamentosOptions);
                 });
-                selectDepartamentos.addEventListener(
-                    "change",
-                    handleChangeDepartamento
-                );
+                selectDepartamentos.addEventListener( "change", handleChangeDepartamento);
             }
         });
 };
 
 const handleOnLoad = () => {
-    fetch(URL+"loadData").then((response) => {
+    fetch(URL + "loadData").then((response) => {
         if (response.status === 409) {
             alert(JSON.stringify(response));
             return;
@@ -137,13 +125,10 @@ const handleOnLoad = () => {
                         const provinciasOptions =
                             document.createElement("option");
                         provinciasOptions.value = i.id;
-                        provinciasOptions.innerText = i.nombre;
+                        provinciasOptions.innerText = i.name;
                         selectProvincias.appendChild(provinciasOptions);
                     });
-                    selectProvincias.addEventListener(
-                        "change",
-                        handleChangeProvincia
-                    );
+                    selectProvincias.addEventListener( "change", handleChangeProvincia);
                 }
             });
     });
