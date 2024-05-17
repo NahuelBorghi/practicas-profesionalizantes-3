@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selección de opciones</title>
+</head>
+<body>
+
+
+</body>
+
+<script>
+
+console.log('Introducción a WebComponents');
+
+class CustomSelector extends HTMLElement
+{
+	constructor()
+	{
+		super();
+		
+		//Inicializar cosas que serán requeridas al momento de la visualización
+		//Hasta acá, el elemento no está renderizado. Por lo tanto, tampoco recibe eventos.
+		
+		this._title = document.createElement('h2');
+		this._title.innerText = 'Selecciona tu opción:';
+		
+		this._select = document.createElement('select');
+	}
+	
+	fillWith( data )
+	{
+		//Acá queremos recibir un array de objetos y insertarlos todos en el selector
+		//Forma del objeto (data) a recibir: [ { id: 'id', value: 'value' }, ... ];
+		
+		this._select.innerHTML = '';
+		
+		for( let dataItem of data )
+		{
+			const item = document.createElement('option');
+			item.value = dataItem.id;
+			item.text = dataItem.value;
+			
+			this._select.add(item);
+		}
+	}
+	
+	connectedCallback()
+	{
+		//Es el primer método que se ejecuta cuando la instancia/objeto es insertado dentro
+		//de un nodo que ya sí está representado/renderizado en pantalla.
+		//Recién ahora, el objeto pasa a tener estado activo (Recibe eventos y puede contestarlos)
+		
+		this.appendChild( this._title );
+		this.appendChild( this._select );
+	}
+	
+	disconnectedCallback()
+	{
+		//Se ejecuta cuando el elemento gráfico es retirado del nodo que lo representa.
+		//Vuelve a estar desconectado de la recepción de eventos.
+	}
+	
+	adoptedCallback()
+	{
+		//Se ejecuta sólo cuando el objeto es movido de "proceso" o de "pestaña"
+	}
+	
+	attributesChangedCallback( oldValue, newValue )
+	{
+		//Se utiliza sólo para personalizar el comportamiento ante cambios en los valores de los atributos
+		//que se definen en la propiedad observableAttributes()
+	}
+	
+	static get observableAttributes()
+	{
+		//Sirve para definir atributos del estilo "HTML" y que tienen posibilidad de ser modificados
+		//durante la ejecución.
+		return ["value"];
+	}
+}
+
+customElements.define( 'x-custom-selector', CustomSelector );
+
+let mySelector = new CustomSelector();
+const dataFromServer = '[{"id":"1","value":"Perro"},{"id":"2","value":"Gato"},{"id":"3","value":"Lobo"}]';
+
+mySelector.fillWith( JSON.parse( dataFromServer ) );
+
+mySelector.addEventListener('change', (event) => 
+{ 
+	const _mySelector = event.target;
+	const _optionData = 
+	{ 
+		id: _mySelector.item( _mySelector.selectedIndex ).value,
+		value: _mySelector.item( _mySelector.selectedIndex ).text
+	}
+	
+	console.log( _optionData );
+});
+
+document.body.appendChild(mySelector);
+
+//<html> --> objeto: document
+//pestaña del navegador --> objeto: window
+//window.document.body
+
+</script>
+
+</html>

@@ -1,0 +1,19 @@
+Actividad WebComponent ABM (CRUD)
+
+Versión 1.0
+Desarrollar un WebComponent que represente la interfaz de usuario adjuntada en la imagen.
+Aclaración: 25/4 (UN solo WebComponent con todo lo necesario dentro)
+
+La misma contiene los siguientes elementos importantes:
+Botón Listar debe llenar la tabla vacía de la parte inferior a partir del conjunto de datos provisto en cuentas.json
+Botón Crear debe solicitar datos mediante la función prompt() y muestre al finalizar el objeto vía consola de JS.
+Botón Editar debe solicitar al usuario que ingrese el ID del objeto, pedir los nuevos datos para el objeto vía función prompt() y al terminar imprimir por consola de JS la versión "anterior" y la "actualizada" del mismo.
+Botón Eliminar debe solicitar al usuario que ingrese el ID del objeto e imprimir por consola de JS el objeto a borrar.
+Botón ...  únicamente es un selector pensado para futuras acciones (completarlo a gusto)
+Tabla de datos (3 columnas: ID, Username, Saldo)
+
+Versión 2.0
+Todas las acciones deben efectuar una modificación real del conjunto de datos y actualizar la visualización de la tabla luego de cada acción. Para ello, considere la estructura de datos como un JSON ya cargado en el programa.
+
+Versión 3.0
+Efectúe las modificaciones necesarias a la versión 2.0 de modo tal que todas las acciones del sistema se resuelvan a través de código del servidor. Para ello, deberá construir una base de datos sencilla que almacene el dataset provisto y que al consultarlo, como así también todas las acciones pertinentes se efectúen mediante formato JSON.
