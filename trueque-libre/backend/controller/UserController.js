@@ -24,6 +24,17 @@ class UserController {
             return res.status(400).json({ error: error.message });
         }
     }
+    async login(req, res) {
+        console.time('login');
+        try {
+            const { userName, password} = req.body;
+            const flag = await this.userService.logInUser(userName, password);
+            return res.status(200).send({ userID: flag.id, userName: flag.name });
+        } catch (error) {
+            console.timeEnd('login')
+            return res.status(400).json({error:error.message})
+        }
+    }
 }
 
 module.exports = UserController;

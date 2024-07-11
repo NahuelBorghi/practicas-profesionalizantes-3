@@ -28,8 +28,8 @@ const PublicationController = require("./controller/PublicationController.js");
 // // Routes for UserController
 const userRoutes = require("express").Router();
 const userController = new UserController();
-userRoutes.post("/create", (req,res) => {userController.create(req, res)});
-// userRoutes.post("/", UserController.create);
+userRoutes.post("/register", (req,res) => {userController.create(req, res)});
+userRoutes.post("/login", (req, res) => userController.login(req, res));
 // userRoutes.put("/", UserController.update);
 // userRoutes.delete("/", UserController.delete);
 
