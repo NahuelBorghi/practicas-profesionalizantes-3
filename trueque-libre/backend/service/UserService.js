@@ -1,3 +1,4 @@
+const BaseException = require('../exceptions/BaseException');
 const MySqlRepository = require('../repository/MySqlRepository');
 
 class UserService {
@@ -12,25 +13,25 @@ class UserService {
     }
 
     async createUser(userName, password, email) {
-        return this.mysqlRepository.createUser(userName, password, email);
+        try {
+            return this.mysqlRepository.createUser(userName, password, email);
+        } catch (error) {
+            throw new BaseException(`createUserService: ${error.message}`, 400, "Bad Request", "UserCreationError");
+        }
     }
     
     async logInUser(userName, password) {
         try {
             const user = this.mysqlRepository.getUserByUserName(userName);
             if (!user.userName) {
-                throw new Error('User not found');
+                throw new BaseException('User not found', 404, "Not Found", "UserNotFoundError");
             } else if (user.password !== password) {
-                throw new Error('invalid password. the password for ' + user.userName + ' is ' + user.password);
+                throw new BaseException(`Invalid password. The password for ${user.userName} is ${user.password}`, error.statusCode??400, "Bad Request", "UserLoginError");
             }
-
-            const userLogged = await this.mysqlRepository.updateUserState(user.id)
-            if (!user.userName) {
-                throw new Error('User not found');
-            } 
+            const userLogged = await this.mysqlRepository.updateUserState(user.id);
             return userLogged
         }catch (error) {
-            console.error(error);
+            throw new BaseException(`loginUserService: ${error.message}`, error.statusCode??400, "Bad Request", "UserCreationError");
         }
     }
 }
