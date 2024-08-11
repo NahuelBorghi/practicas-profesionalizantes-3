@@ -1,6 +1,5 @@
 const BaseException = require("../exceptions/BaseException");
 
-require("dotenv").config();
 const secretKey = process.env.JWT_SECRET?? "AguanteBoca"; // Clave secreta para firmar el token
 const pattern = process.env.JWT_PATTERN??"BOCA"; // Patrón para insertar en el token
 const patternInterval = parseInt(process.env.JWT_PATTERN_INTERVAL, 10) ?? 10; // Convertir a número

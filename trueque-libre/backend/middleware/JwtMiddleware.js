@@ -3,7 +3,7 @@ const { verifyToken } = require("../utils/jwt");
 
 // Middleware para verificar el JWT
 async function jwtMiddleware(req, res, next) {
-    const excludedPaths = ["/login", "/register", "/public"]; // Añade aquí las rutas que quieres excluir
+    const excludedPaths = ["/user/login", "/user/register", "/user/"]; // Añade aquí las rutas que quieres excluir
 
     // Excluir ciertas rutas del middleware
     if (excludedPaths.some((path) => req.path.startsWith(path))) {
@@ -24,7 +24,7 @@ async function jwtMiddleware(req, res, next) {
         req.user = decoded; // Almacenar el payload decodificado en req.user
         next();
     } catch (error) {
-        throw new BaseException(error.message, error.statusCode??401, "Unauthorized", "AuthenticationError");
+        next(error);
     }
 }
 

@@ -17,14 +17,13 @@ class UserController {
         console.time(label);
         try {
             const { userName, password, email } = req.body;
-            const user = await this.userService.createUser(userName, password, email);
+            await this.userService.createUser(userName, password, email);
             console.timeLog(label, "user created successfully");
             console.timeEnd(label);
-            return res.status(200).json(user);
+            return res.status(201);
         } catch (error) {
-            console.timeLog(label, error.message);
             console.timeEnd(label);
-            throw new BaseException(`/create: ${error.message}`, error.statusCode??400, "Bad Request", "UserCreationError");
+            throw new BaseException(`UserController.create: ${error.message}`, error.statusCode??400, "Bad Request", "UserCreationError");
         }
     }
     async login(req, res) {
@@ -38,7 +37,7 @@ class UserController {
             return res.status(200).send({ userID: flag.id, userName: flag.name });
         } catch (error) {
             console.timeEnd(label)
-            throw new BaseException(`/login: ${error.message}`, error.statusCode??400, "Bad Request", "UserLoginError");
+            throw new BaseException(`UserController.login: ${error.message}`, error.statusCode??400, "Bad Request", "UserLoginError");
         }
     }
 }

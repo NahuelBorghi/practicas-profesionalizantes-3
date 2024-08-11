@@ -3,6 +3,7 @@ const UserController = require("./controller/UserController.js");
 const ChatController = require("./controller/ChatController.js");
 const OfferController = require("./controller/OfferController.js");
 const PublicationController = require("./controller/PublicationController.js");
+const userRoutes = require("./router/userRouter.js");
 
 // // Routes for ChatController
 // const chatRoutes = require("express").Router();
@@ -24,14 +25,6 @@ const PublicationController = require("./controller/PublicationController.js");
 // publicationRoutes.post("/", PublicationController.create);
 // publicationRoutes.put("/", PublicationController.update);
 // publicationRoutes.delete("/", PublicationController.delete);
-
-// // Routes for UserController
-const userRoutes = require("express").Router();
-const userController = new UserController();
-userRoutes.post("/register", (req,res) => {userController.create(req, res)});
-userRoutes.post("/login", (req, res) => userController.login(req, res));
-// userRoutes.put("/", UserController.update);
-// userRoutes.delete("/", UserController.delete);
 
 // // Export the routers
 // routes.use("/chat", chatRoutes);
