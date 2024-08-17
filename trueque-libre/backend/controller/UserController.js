@@ -3,9 +3,6 @@ const UserService = require('../service/UserService');
 
 class UserController {
     constructor() {
-        this.setup();
-    }
-    setup() {
         const label = `-------------------- UserController setup - ${Date.now()}`;
         console.time(label);
         this.userService = new UserService();
@@ -20,7 +17,7 @@ class UserController {
             await this.userService.createUser(userName, password, email);
             console.timeLog(label, "user created successfully");
             console.timeEnd(label);
-            return res.status(201);
+            return res.status(201).send({ message: "User created successfully" });
         } catch (error) {
             console.timeEnd(label);
             throw new BaseException(`UserController.create: ${error.message}`, error.statusCode??400, "Bad Request", "UserCreationError");

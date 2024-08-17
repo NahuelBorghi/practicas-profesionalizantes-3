@@ -17,7 +17,7 @@ const port = process.env.PORT || 8080;
 app.use(gzipResponseMiddleware)
 
 // Middleware para manejar JWT
-app.use(jwtMiddleware);
+// app.use(jwtMiddleware);
 
 // Rutas
 app.use("/", routes);

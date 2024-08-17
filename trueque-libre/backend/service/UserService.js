@@ -4,9 +4,6 @@ const { verifyPassword } = require('../utils/hash');
 
 class UserService {
     constructor() {
-        this.setup();
-    }
-    setup() {
         console.time('UserService setup');
         this.mysqlRepository = new MySqlRepository();
         console.timeLog('UserService setup', 'MySqlRepository setup complete');

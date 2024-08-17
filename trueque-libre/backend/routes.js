@@ -1,35 +1,14 @@
 const routes = require("express").Router();
-const UserController = require("./controller/UserController.js");
-const ChatController = require("./controller/ChatController.js");
-const OfferController = require("./controller/OfferController.js");
-const PublicationController = require("./controller/PublicationController.js");
-const userRoutes = require("./router/userRouter.js");
+const UserRoutes = require("./router/UserRouter.js");
+// const PublicationRoutes = require("./router/PublicationRouter.js");
+// const ChatRoutes = require("./router/ChatRouter.js");
+// const OfferRoutes = require("./router/OfferRouter.js");
+const ImageRoutes = require("./router/ImageRouter.js");
 
-// // Routes for ChatController
-// const chatRoutes = require("express").Router();
-// chatRoutes.get("/", ChatController.get);
-// chatRoutes.post("/", ChatController.create);
-// chatRoutes.put("/", ChatController.update);
-// chatRoutes.delete("/", ChatController.delete);
-
-// // Routes for OfferController
-// const offerRoutes = require("express").Router();
-// offerRoutes.get("/", OfferController.get);
-// offerRoutes.post("/", OfferController.create);
-// offerRoutes.put("/", OfferController.update);
-// offerRoutes.delete("/", OfferController.delete);
-
-// // Routes for PublicationController
-// const publicationRoutes = require("express").Router();
-// publicationRoutes.get("/", PublicationController.get);
-// publicationRoutes.post("/", PublicationController.create);
-// publicationRoutes.put("/", PublicationController.update);
-// publicationRoutes.delete("/", PublicationController.delete);
-
-// // Export the routers
-// routes.use("/chat", chatRoutes);
-// routes.use("/offer", offerRoutes);
-// routes.use("/publication", publicationRoutes);
-routes.use("/user", userRoutes);
+routes.use("/user", UserRoutes);
+// routes.use("/publication", PublicationRoutes);
+// routes.use("/chat", ChatRoutes);
+// routes.use("/offer", OfferRoutes);
+routes.use("/image", ImageRoutes);
 
 module.exports = routes;
