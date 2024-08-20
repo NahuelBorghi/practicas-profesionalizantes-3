@@ -1,9 +1,10 @@
 const generateId = require('../utils/UUID.js');
 
 class Image {
-    constructor(image, creationUser, id = null) {
+    constructor(image, mimetype, creationUser, id = null) {
         this.id = id || generateId();
         this.image = image;
+        this.mimetype = mimetype;
         this.creationDate = new Date();
         this.creationUser = creationUser;
     }

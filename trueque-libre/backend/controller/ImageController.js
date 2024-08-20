@@ -1,11 +1,6 @@
 const BaseException = require("../exceptions/BaseException.js");
 const ImageService = require("../service/ImageService.js");
 const multer = require('multer');
-const fs = require('fs');
-
-// Configuración de multer
-const storage = multer.memoryStorage(); // Guarda el archivo en memoria
-const upload = multer({ storage: storage });
 
 class ImageController {
     constructor() {
@@ -19,6 +14,17 @@ class ImageController {
     async uploadImage(req, res) {
         try {
             // Usar multer para manejar la carga de archivos
+            const upload = multer({
+                storage: multer.memoryStorage(),
+                fileFilter: (req, file, cb) => {
+                    const allowedMimes = ['image/jpeg', 'image/jpg', 'image/png'];
+                    if (allowedMimes.includes(file.mimetype)) {
+                        cb(null, true);
+                    } else {
+                        cb(new BaseException("Invalid file type", 400, "Bad Request", "InvalidFileType"));
+                    }
+                }
+            })
             upload.single('fileData')(req, res, async (err) => {
                 if (err) {
                     throw new BaseException("File upload error", 400, "Bad Request", "FileUploadError");
@@ -26,12 +32,13 @@ class ImageController {
                 
                 const creationUser = req.body.creationUser;
                 const file = req.file;
+                const mimetype = file.mimetype;
 
                 if (!file || !creationUser) {
                     throw new BaseException("Missing required fields", 400, "Bad Request", "MissingRequiredFields");
                 }
                 // Guardar el archivo utilizando el servicio
-                const imageId = await this.imageService.saveImage(file.buffer, creationUser);
+                const imageId = await this.imageService.saveImage(file.buffer, mimetype, creationUser);
                 console.log("Image ID:", imageId);
 
                 res.status(201).json({ message: 'Imagen guardada exitosamente.', imageId });
@@ -49,52 +56,16 @@ class ImageController {
                 throw new BaseException("Image ID is required", 400, "Bad Request", "ImageIdRequired");
             }
             console.log("Image ID:", imageId);
-            const imageData = await this.imageService.getImageById(imageId);
-            if (!imageData) {
+            const image = await this.imageService.getImageById(imageId);
+            if (!image) {
                 throw new BaseException("Image not found", 404, "Not Found", "ImageNotFound");
             }
-            console.log("Image ID:", imageId);
+            console.log("Image ID:", image.id);
             // Determinar el tipo de imagen basado en la extensión de archivo si es necesario
-            res.setHeader('Content-Type', 'image/jpg'); // Cambiar según el tipo de imagen si es necesario
-
-            
-            // solo para pruebas
-
-            fs.writeFileSync(`test_image_${imageId}.jpg`, imageData);
-
-            const originalImagePath = "./img.jpg";
-            const savedImagePath = `./test_image_${imageId}.jpg`;
-
-            console.log("Original image path:", originalImagePath);
-            console.log("Saved image path:", savedImagePath);
-
-            // Leer el archivo original y el archivo guardado
-            let originalImageBuffer, savedImageBuffer;
-
-            if (fs.existsSync(originalImagePath)) {
-                originalImageBuffer = fs.readFileSync(originalImagePath);
-                console.log("Original image buffer leído con éxito");
-            } else {
-                console.log("Archivo original no encontrado:", originalImagePath);
-            }
-
-            if (fs.existsSync(savedImagePath)) {
-                savedImageBuffer = fs.readFileSync(savedImagePath);
-                console.log("Saved image buffer leído con éxito");
-            } else {
-                console.log("Archivo guardado no encontrado:", savedImagePath);
-            }
-
-            // Comparar longitudes
-            console.log("Original image size:", originalImageBuffer.length);
-            console.log("Saved image size:", savedImageBuffer.length);
-
-            // Comparar contenido
-            const isEqual = originalImageBuffer.equals(savedImageBuffer);
-            console.log("Are images equal?", isEqual);
+            res.setHeader('Content-Type', image.mimetype); // Cambiar según el tipo de imagen si es necesario
 
             // Enviar la imagen como respuesta
-            res.status(200).send(imageData);
+            res.status(200).send(image.image);
         } catch (error) {
             throw new BaseException(`ImageController.getImage: ${error.message}`, error.statusCode ?? 500, "Internal Server Error", "GetImageError");
         }

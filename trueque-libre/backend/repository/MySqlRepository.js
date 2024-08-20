@@ -99,15 +99,15 @@ class MySqlRepository {
 
 
     // Image methods
-    async insertImage ({ id, image, creationDate, creationUser }){
-        const query = ` INSERT INTO Image (id, image, creationDate, creationUser) VALUES (?, ?, ?, ?); `;
+    async insertImage ({ id, image, mimetype, creationDate, creationUser }){
+        const query = ` INSERT INTO Image (id, image, mimetype, creationDate, creationUser) VALUES (?, ?, ?, ?, ?); `;
         const validationQuery = `SELECT id FROM Users WHERE id = ?`;
         try {
             const [validation] = await this.connection.execute(validationQuery, [creationUser]);
             if (validation.length === 0) {
                 throw new BaseException("User not found", 404, "Not Found", "UserNotFound");
             }
-            await this.connection.execute(query, [id, image, creationDate, creationUser]);
+            await this.connection.execute(query, [id, image, mimetype, creationDate, creationUser]);
         } catch (error) {
             console.error(error);
             throw new BaseException(`mysqlRepository.insertImage: ${error.message}`, 400, "Bad Request", "ImageCreationError");
@@ -115,13 +115,13 @@ class MySqlRepository {
     };
 
     async getImageById(imageId) {
-        const query = `SELECT image FROM Image WHERE id = ?`;
+        const query = `SELECT * FROM Image WHERE id = ?`;
         try {
             const [rows] = await this.connection.execute(query, [imageId]);
             if (rows.length === 0) {
                 return null;
             }
-            return rows[0].image;
+            return rows[0];
         } catch (error) {
             console.error(error);
             throw new BaseException(`mysqlRepository.getImageById: ${error.message}`, 400, "Bad Request", "ImageRetrievalError");
